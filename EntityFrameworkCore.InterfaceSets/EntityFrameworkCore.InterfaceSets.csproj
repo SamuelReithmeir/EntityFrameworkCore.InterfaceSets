@@ -7,7 +7,7 @@
 
         <!-- NuGet Package Metadata -->
         <PackageId>EntityFrameworkCore.InterfaceSets</PackageId>
-        <Version>1.0.0</Version>
+        <Version>1.0.1</Version>
         <Authors>SamuelRe</Authors>
         <Description>A library for Entity Framework Core that enables querying entities through shared interfaces, allowing you to work with entities from different class hierarchies that implement a common interface.</Description>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -16,7 +16,7 @@
         <RepositoryType>git</RepositoryType>
         <PackageTags>EntityFrameworkCore;efcore;interface;query;linq</PackageTags>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageReleaseNotes>Initial release with support for interface-based querying across multiple entity types.</PackageReleaseNotes>
+        <PackageReleaseNotes>Performance improvements and fix for interfaces on basetypes not in the model</PackageReleaseNotes>
 
         <!-- Generate XML documentation -->
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
