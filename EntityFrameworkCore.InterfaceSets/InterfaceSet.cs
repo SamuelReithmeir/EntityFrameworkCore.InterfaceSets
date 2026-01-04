@@ -16,6 +16,7 @@ public class InterfaceSet<TInterface> : IQueryable<TInterface>, IAsyncEnumerable
     private readonly IQueryable<TInterface> _query;
     private readonly List<Type> _entityTypes;
     private readonly InterfaceSetEnumerable<TInterface> _enumerable;
+    private readonly InterfaceSetAsyncQueryProvider<TInterface> _queryProvider;
 
     /// <summary>
     /// Initializes a new instance of the InterfaceSet class.
@@ -34,8 +35,9 @@ public class InterfaceSet<TInterface> : IQueryable<TInterface>, IAsyncEnumerable
                 $"No entity types implementing {typeof(TInterface).Name} were found in the DbContext model.");
         }
 
-        // Build enumerable and queryable
+        // Build enumerable, query provider, and queryable
         _enumerable = BuildEnumerable();
+        _queryProvider = new InterfaceSetAsyncQueryProvider<TInterface>(_context, _entityTypes, _enumerable);
         _query = BuildUnionQuery();
     }
 
@@ -68,11 +70,11 @@ public class InterfaceSet<TInterface> : IQueryable<TInterface>, IAsyncEnumerable
 
     private IQueryable<TInterface> BuildUnionQuery()
     {
-        // EF Core doesn't support Concat/Union between different entity types
-        // So we create an in-memory enumerable that will lazily query each DbSet
-        // and wrap it as a queryable for LINQ composition
-
-        return _enumerable.AsQueryable();
+        // Create a queryable that uses our custom async query provider
+        // This enables async LINQ operations like FirstAsync, ToListAsync, etc.
+        // We need to create a proper constant expression that represents a queryable source
+        var queryable = _enumerable.AsQueryable();
+        return new InterfaceSetQueryable<TInterface>(queryable.Expression, _queryProvider);
     }
 
     #region IQueryable<TInterface> Implementation

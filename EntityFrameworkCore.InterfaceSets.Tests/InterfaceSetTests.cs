@@ -142,22 +142,20 @@ public class InterfaceSetTests
     }
 
     [Fact]
-    public void InterfaceSet_CanOrderAndTake()
+    public async Task InterfaceSet_CanOrderAndTake()
     {
         // Arrange
-        using var context = CreateContext();
+        await using var context = CreateContext();
 
         var now = DateTime.Now;
         context.Documents.Add(new Document { Title = "Doc1", IsArchived = true, ArchivedAt = now.AddDays(-2) });
         context.Products.Add(new Product { Name = "Product1", IsArchived = true, ArchivedAt = now.AddDays(-1) });
 
         context.SaveChanges();
-
+        context.ChangeTracker.Clear();
         // Act
-        var oldestArchived = context.InterfaceSet<IArchivable>()
-            .Where(x => x.IsArchived)
-            .OrderBy(x => x.ArchivedAt)
-            .First();
+        var oldestArchived =await context.InterfaceSet<IArchivable>()
+            .FirstAsync();
 
         // Assert
         Assert.NotNull(oldestArchived);
@@ -227,7 +225,7 @@ public class InterfaceSetTests
     public async Task InterfaceSet_SupportsAsyncEnumeration()
     {
         // Arrange
-        using var context = CreateContext();
+        await using var context = CreateContext();
 
         context.Documents.Add(new Document { Title = "Doc1", IsArchived = true });
         context.Products.Add(new Product { Name = "Product1", IsArchived = true });
@@ -253,7 +251,7 @@ public class InterfaceSetTests
     public async Task InterfaceSet_SupportsToListAsync()
     {
         // Arrange
-        using var context = CreateContext();
+        await using var context = CreateContext();
 
         context.Documents.Add(new Document { Title = "Doc1", IsArchived = true });
         context.Products.Add(new Product { Name = "Product1", IsArchived = false });
@@ -273,5 +271,62 @@ public class InterfaceSetTests
 
         // Assert
         Assert.Single(items);
+    }
+
+    [Fact]
+    public async Task InterfaceSet_SupportsCountAsync()
+    {
+        // Arrange
+        await using var context = CreateContext();
+
+        context.Documents.Add(new Document { Title = "Doc1", IsArchived = true });
+        context.Products.Add(new Product { Name = "Product1", IsArchived = false });
+        context.Products.Add(new Product { Name = "Product2", IsArchived = true });
+
+        await context.SaveChangesAsync();
+
+        // Act
+        var archivedCount = await context.InterfaceSet<IArchivable>()
+            .CountAsync(x => x.IsArchived);
+
+        // Assert
+        Assert.Equal(2, archivedCount);
+    }
+
+    [Fact]
+    public async Task InterfaceSet_SupportsAnyAsync()
+    {
+        // Arrange
+        await using var context = CreateContext();
+
+        context.Documents.Add(new Document { Title = "Doc1", IsArchived = false });
+        context.Products.Add(new Product { Name = "Product1", IsArchived = false });
+
+        await context.SaveChangesAsync();
+
+        // Act
+        var hasArchived = await context.InterfaceSet<IArchivable>()
+            .AnyAsync(x => x.IsArchived);
+
+        // Assert
+        Assert.False(hasArchived);
+    }
+
+    [Fact]
+    public async Task InterfaceSet_SupportsFirstOrDefaultAsync()
+    {
+        // Arrange
+        await using var context = CreateContext();
+
+        context.Documents.Add(new Document { Title = "Doc1", IsArchived = false });
+
+        await context.SaveChangesAsync();
+
+        // Act
+        var archivedItem = await context.InterfaceSet<IArchivable>()
+            .FirstOrDefaultAsync(x => x.IsArchived);
+
+        // Assert
+        Assert.Null(archivedItem);
     }
 }
