@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <!-- NuGet Package Metadata -->
+        <PackageId>EntityFrameworkCore.InterfaceSets</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>SamuelRe</Authors>
+        <Description>A library for Entity Framework Core that enables querying entities through shared interfaces, allowing you to work with entities from different class hierarchies that implement a common interface.</Description>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/SamuelReithmeir/EntityFrameworkCore.InterfaceSets</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/SamuelReithmeir/EntityFrameworkCore.InterfaceSets</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>EntityFrameworkCore;efcore;interface;query;linq</PackageTags>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageReleaseNotes>Initial release with support for interface-based querying across multiple entity types.</PackageReleaseNotes>
+
+        <!-- Generate XML documentation -->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="../README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+</Project>
