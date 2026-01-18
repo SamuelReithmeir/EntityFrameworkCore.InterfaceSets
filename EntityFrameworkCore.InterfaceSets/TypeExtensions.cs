@@ -1,29 +1,29 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace EntityFrameworkCore.InterfaceSets;
 
-/// <summary>
-/// Extension methods for Type operations.
-/// </summary>
-internal static class TypeExtensions
+public static class TypeExtensions
 {
     /// <summary>
-    /// Determines whether the type directly implements the specified interface.
-    /// Unlike IsAssignableFrom, this only returns true if the type itself declares the interface,
-    /// not if it inherits it from a base class.
+    /// get all types of the model that implement the specified type
     /// </summary>
-    /// <param name="type">The type to check.</param>
-    /// <param name="interfaceType">The interface type to check for.</param>
-    /// <returns>True if the type directly implements the interface; otherwise, false.</returns>
-    public static bool DirectlyImplementsInterface(this Type type, Type interfaceType)
+    /// <param name="context"></param>
+    /// <param name="typeToImplement"></param>
+    /// <param name="onlyRootType"></param>
+    /// <returns></returns>
+    public static List<Type> GetImplementingTypes(this DbContext context, Type typeToImplement,
+        bool onlyRootType = true)
     {
-        if (!interfaceType.IsInterface)
+        var allTypes = context.Model.GetEntityTypes()
+            .Select(x => x.ClrType)
+            .Where(typeToImplement.IsAssignableFrom)
+            .ToList();
+
+        if (!onlyRootType)
         {
-            return false;
+            return allTypes;
         }
 
-        // GetInterfaces() returns all interfaces implemented by the type,
-        // including those inherited from base classes.
-        // We need to check if this specific type declares the interface.
-        return type.GetInterfaces().Contains(interfaceType) &&
-               (type.BaseType == null || !type.BaseType.GetInterfaces().Contains(interfaceType));
+        return allTypes.Where(x => allTypes.All(y => y != x.BaseType)).ToList();
     }
 }
