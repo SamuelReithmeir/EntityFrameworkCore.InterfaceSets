@@ -1,4 +1,3 @@
-using EntityFrameworkCore.InterfaceSets.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -32,7 +31,6 @@ public abstract class InterfaceSetTestBase
     {
         var options = new DbContextOptionsBuilder<TestDbContext>()
             .UseSqlite("DataSource=:memory:")
-            .UseInventoryServices()
             .LogTo(
                 (eventId, logLevel) => logLevel >= LogLevel.Information,
                 eventData => SqlLogger.Log(

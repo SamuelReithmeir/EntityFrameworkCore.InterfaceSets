@@ -50,18 +50,7 @@ public class Product : ISoftDeletable
 }
 ```
 
-### 3. Configure your DbContext
-
-```csharp
-protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-{
-    optionsBuilder
-        .UseSqlServer(connectionString)
-        .UseInventoryServices(); // Enable InterfaceSets
-}
-```
-
-### 4. Query by interface
+### 3. Query by interface
 
 ```csharp
 // Count all soft-deleted entities across all entity types
