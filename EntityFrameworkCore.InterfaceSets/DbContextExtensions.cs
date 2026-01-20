@@ -13,7 +13,7 @@ public static class DbContextExtensions
     /// <typeparam name="TInterface">The interface type that entities implement.</typeparam>
     /// <param name="context">The DbContext instance.</param>
     /// <returns>An InterfaceSet instance for querying entities through the interface.</returns>
-    public static InterfaceSet<TInterface> InterfaceSet<TInterface>(this DbContext context)
+    public static IInterfaceSet<TInterface> InterfaceSet<TInterface>(this DbContext context)
         where TInterface : class
     {
         if (context == null)

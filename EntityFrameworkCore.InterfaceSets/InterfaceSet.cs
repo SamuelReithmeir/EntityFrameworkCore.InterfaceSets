@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EntityFrameworkCore.InterfaceSets;
 
-public class InterfaceSet<TInterface> : InterfaceSetQueryable<TInterface,TInterface>,IEntityRootExpressionProvider
+public class InterfaceSet<TInterface> : InterfaceSetQueryable<TInterface,TInterface>,
+    IInterfaceSet<TInterface>,
+    IEntityRootExpressionProvider
     where TInterface : class
 {
     private readonly DbContext _context;
